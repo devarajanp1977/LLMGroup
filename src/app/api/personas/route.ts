@@ -13,7 +13,15 @@ export async function POST(request: Request) {
   const payload = personaMutationSchema.safeParse(await request.json());
 
   if (!payload.success) {
-    return jsonError("Invalid persona payload", 400);
+    const firstIssue = payload.error.issues[0];
+    const path = firstIssue?.path.join(".");
+    const message = firstIssue?.message
+      ? path
+        ? `${path}: ${firstIssue.message}`
+        : firstIssue.message
+      : "Invalid persona payload";
+
+    return jsonError(message, 400);
   }
 
   const personas = await upsertPersona(payload.data);

@@ -9,7 +9,7 @@ It gives one operator:
 - `@mention` routing and per-bot auto-respond toggles
 - streaming multi-bot chat with shared room context
 - searchable conversation history
-- GitHub Copilot as the intended inference backend, with a local demo fallback
+- GitHub-hosted models via PAT as the intended inference backend, with a local demo fallback
 
 ## Stack
 
@@ -31,7 +31,7 @@ File-backed mode exists so the product remains runnable immediately in this repo
 
 Inference also has two modes:
 
-1. **Copilot mode** when `GITHUB_PAT` is configured
+1. **GitHub Models mode** when `GITHUB_PAT` is configured
 2. **Demo mode** otherwise
 
 Demo mode keeps the full product workflow testable without external credentials.
@@ -53,10 +53,11 @@ ATRIUM_USERNAME=atrium
 ATRIUM_PASSWORD=atrium
 APP_URL=http://localhost:3000
 GITHUB_PAT=
-GITHUB_COPILOT_TOKEN_URL=https://api.github.com/copilot_internal/v2/token
-GITHUB_COPILOT_MODELS_URL=https://api.githubcopilot.com/models
-GITHUB_COPILOT_CHAT_URL=https://api.githubcopilot.com/chat/completions
+GITHUB_COPILOT_MODELS_URL=https://models.github.ai/catalog/models
+GITHUB_COPILOT_CHAT_URL=https://models.github.ai/inference/chat/completions
 ```
+
+`GITHUB_PAT` must have access to GitHub Models. The `GITHUB_COPILOT_*` variable names are kept for backwards compatibility, but the defaults now target the GitHub Models APIs.
 
 ## Local development
 
@@ -118,10 +119,10 @@ Implemented from the PRD:
 - parallel bot streaming UX
 - monthly premium-request counter
 - room search
-- provider abstraction for Copilot with fallback model catalogue
+- provider abstraction for GitHub Models with fallback model catalogue
 
 ## Known limitations
 
-- Copilot integration uses direct HTTP calls and falls back to demo responses if credentials or responses fail
+- GitHub Models integration uses direct HTTP calls and falls back to demo responses if credentials or responses fail
 - the UI simulates chunked streaming from the returned model text rather than forwarding native token streaming from the provider
 - there is no nginx config in this repo yet; Compose is included for local and server-side container deployment

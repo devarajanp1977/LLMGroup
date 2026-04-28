@@ -18,11 +18,11 @@ const envSchema = z.object({
   GITHUB_COPILOT_MODELS_URL: z
     .string()
     .optional()
-    .default("https://api.githubcopilot.com/models"),
+    .default("https://models.github.ai/catalog/models"),
   GITHUB_COPILOT_CHAT_URL: z
     .string()
     .optional()
-    .default("https://api.githubcopilot.com/chat/completions"),
+    .default("https://models.github.ai/inference/chat/completions"),
 });
 
 export const env = envSchema.parse({

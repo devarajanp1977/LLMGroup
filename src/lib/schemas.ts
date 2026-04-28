@@ -1,5 +1,24 @@
 import { z } from "zod";
 
+function boundedNumber(min: number, max: number) {
+  return z.preprocess((value) => {
+    if (typeof value === "string") {
+      const trimmed = value.trim();
+
+      if (!trimmed) {
+        return value;
+      }
+
+      return Number(trimmed);
+    }
+
+    return value;
+  }, z.number().finite().min(min).max(max));
+}
+
+const requiredTrimmedString = (min: number, max: number) =>
+  z.string().trim().min(min).max(max);
+
 export const loginSchema = z.object({
   username: z.string().min(1),
   password: z.string().min(1),
@@ -8,22 +27,22 @@ export const loginSchema = z.object({
 export const personaMutationSchema = z.discriminatedUnion("action", [
   z.object({
     action: z.literal("create"),
-    name: z.string().min(1).max(40),
-    systemPrompt: z.string().min(1).max(4000),
-    modelId: z.string().min(1),
-    temperature: z.number().min(0).max(2),
-    topP: z.number().min(0).max(1),
+    name: requiredTrimmedString(1, 40),
+    systemPrompt: requiredTrimmedString(1, 4000),
+    modelId: z.string().trim().min(1),
+    temperature: boundedNumber(0, 2),
+    topP: boundedNumber(0, 1),
     color: z.string().regex(/^#([0-9a-fA-F]{6})$/),
     autoRespondDefault: z.boolean(),
   }),
   z.object({
     action: z.literal("update"),
     id: z.string().uuid(),
-    name: z.string().min(1).max(40),
-    systemPrompt: z.string().min(1).max(4000),
-    modelId: z.string().min(1),
-    temperature: z.number().min(0).max(2),
-    topP: z.number().min(0).max(1),
+    name: requiredTrimmedString(1, 40),
+    systemPrompt: requiredTrimmedString(1, 4000),
+    modelId: z.string().trim().min(1),
+    temperature: boundedNumber(0, 2),
+    topP: boundedNumber(0, 1),
     color: z.string().regex(/^#([0-9a-fA-F]{6})$/),
     autoRespondDefault: z.boolean(),
   }),
